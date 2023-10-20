@@ -1,0 +1,18 @@
+{
+  "name": "org.centurioncc.system.voice-comms-integration",
+  "version": "0.1.0",
+  "displayName": "Centurion System Voice Comms Integration",
+  "description": "Integrate VoiceComms with Centurion System",
+  "unity": "2019.4",
+  "author": {
+    "name": "DerpyNewbie",
+    "email": "derpynewbie@gmail.com",
+    "url": "https://github.com/derpynewbie"
+  },
+  "vpmDependencies": {
+    "com.vrchat.worlds": "^3.4.0",
+    "dev.derpynewbie.voice-comms": "^0.1.0",
+    "org.centurioncc.system": "^0.5.0"
+  },
+  "hideInEditor": false
+}
