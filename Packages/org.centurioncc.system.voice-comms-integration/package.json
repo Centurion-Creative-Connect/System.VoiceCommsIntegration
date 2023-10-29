@@ -10,7 +10,6 @@
     "url": "https://github.com/derpynewbie"
   },
   "vpmDependencies": {
-    "com.vrchat.worlds": "~3.4.0",
     "dev.derpynewbie.voice-comms": "~0.1.0",
     "org.centurioncc.system": "~0.5.0"
   },
