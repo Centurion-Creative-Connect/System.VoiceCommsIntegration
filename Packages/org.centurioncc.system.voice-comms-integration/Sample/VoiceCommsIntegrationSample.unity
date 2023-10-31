@@ -13395,6 +13395,8 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 1691598825}
   playerManager: {fileID: 0}
   voiceComms: {fileID: 0}
+  channelOffset: 1024
+  clearChannelsOnStart: 1
   staffTeamId: 255
   makeStaffTeamAsBroadcastChannel: 1
   makeStaffTeamReceiveTeamVc: 1

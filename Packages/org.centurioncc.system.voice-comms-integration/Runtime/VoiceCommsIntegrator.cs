@@ -14,7 +14,12 @@ namespace CenturionCC.System.VoiceCommsIntegration
         private PlayerManager playerManager;
         [SerializeField] [HideInInspector] [NewbieInject]
         private VoiceCommsManager voiceComms;
-
+        [SerializeField]
+        [Tooltip("Offset that is applied to VoiceComms Tx/Rx channel Id")]
+        private int channelOffset = 1024;
+        [SerializeField]
+        [Tooltip("Clears VoiceComms Tx/Rx channels on Start()")]
+        private bool clearChannelsOnStart = true;
         [SerializeField]
         [Tooltip("Staff Team Id specified in PlayerManager")]
         private int staffTeamId = 255;
@@ -32,6 +37,12 @@ namespace CenturionCC.System.VoiceCommsIntegration
         private void Start()
         {
             playerManager.SubscribeCallback(this);
+
+            if (clearChannelsOnStart)
+            {
+                voiceComms._ClearRxChannel();
+                voiceComms._ClearTxChannel();
+            }
         }
 
         public override void OnLocalPlayerChanged(PlayerBase playerNullable, int index)
@@ -80,12 +91,16 @@ namespace CenturionCC.System.VoiceCommsIntegration
 
         private void _AddTxChannel(int channelId)
         {
+            channelId += channelOffset;
+
             voiceComms._AddTxChannel(channelId);
             _txChannels.Add(channelId);
         }
 
         private void _RemoveTxChannel(int channelId)
         {
+            channelId += channelOffset;
+
             voiceComms._RemoveTxChannel(channelId);
             _txChannels.Remove(channelId);
         }
@@ -101,12 +116,16 @@ namespace CenturionCC.System.VoiceCommsIntegration
 
         private void _AddRxChannel(int channelId)
         {
+            channelId += channelOffset;
+
             voiceComms._AddRxChannel(channelId);
             _rxChannels.Add(channelId);
         }
 
         private void _RemoveRxChannel(int channelId)
         {
+            channelId += channelOffset;
+
             voiceComms._RemoveRxChannel(channelId);
             _rxChannels.Remove(channelId);
         }
