@@ -13396,6 +13396,7 @@ MonoBehaviour:
   playerManager: {fileID: 0}
   voiceComms: {fileID: 0}
   channelOffset: 1024
+  clearChannelsOnStart: 1
   staffTeamId: 255
   makeStaffTeamAsBroadcastChannel: 1
   makeStaffTeamReceiveTeamVc: 1
@@ -16023,7 +16024,7 @@ PrefabInstance:
     - target: {fileID: 4522987081379922685, guid: 283dfa6cf1764ec42b6c5ae807a0a71c,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 200
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4522987081379922685, guid: 283dfa6cf1764ec42b6c5ae807a0a71c,
         type: 3}
@@ -16033,7 +16034,7 @@ PrefabInstance:
     - target: {fileID: 4522987081379922685, guid: 283dfa6cf1764ec42b6c5ae807a0a71c,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4522987081379922685, guid: 283dfa6cf1764ec42b6c5ae807a0a71c,
         type: 3}

@@ -18,6 +18,9 @@ namespace CenturionCC.System.VoiceCommsIntegration
         [Tooltip("Offset that is applied to VoiceComms Tx/Rx channel Id")]
         private int channelOffset = 1024;
         [SerializeField]
+        [Tooltip("Clears VoiceComms Tx/Rx channels on Start()")]
+        private bool clearChannelsOnStart = true;
+        [SerializeField]
         [Tooltip("Staff Team Id specified in PlayerManager")]
         private int staffTeamId = 255;
         [SerializeField]
@@ -34,6 +37,12 @@ namespace CenturionCC.System.VoiceCommsIntegration
         private void Start()
         {
             playerManager.SubscribeCallback(this);
+
+            if (clearChannelsOnStart)
+            {
+                voiceComms._ClearRxChannel();
+                voiceComms._ClearTxChannel();
+            }
         }
 
         public override void OnLocalPlayerChanged(PlayerBase playerNullable, int index)
