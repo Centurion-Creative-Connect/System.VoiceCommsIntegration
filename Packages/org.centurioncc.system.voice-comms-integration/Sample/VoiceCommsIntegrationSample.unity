@@ -13399,6 +13399,8 @@ MonoBehaviour:
   clearChannelsOnStart: 1
   staffTeamId: 255
   makeStaffTeamAsBroadcastChannel: 1
+  makeStaffTeamReceiveTeamVc: 1
+  staffTeamRxChannels: 01000000020000000300000004000000
 --- !u!1 &1693653040
 GameObject:
   m_ObjectHideFlags: 0
@@ -16022,7 +16024,7 @@ PrefabInstance:
     - target: {fileID: 4522987081379922685, guid: 283dfa6cf1764ec42b6c5ae807a0a71c,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 200
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4522987081379922685, guid: 283dfa6cf1764ec42b6c5ae807a0a71c,
         type: 3}
@@ -16032,7 +16034,7 @@ PrefabInstance:
     - target: {fileID: 4522987081379922685, guid: 283dfa6cf1764ec42b6c5ae807a0a71c,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4522987081379922685, guid: 283dfa6cf1764ec42b6c5ae807a0a71c,
         type: 3}

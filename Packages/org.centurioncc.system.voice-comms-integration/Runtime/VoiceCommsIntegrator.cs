@@ -38,6 +38,12 @@ namespace CenturionCC.System.VoiceCommsIntegration
         #region PublicAPIs
 
         /// <summary>
+        /// Offset that is applied for team Id to prevent channel conflict
+        /// </summary>
+        [PublicAPI]
+        public int ChannelOffset => channelOffset;
+
+        /// <summary>
         /// Last TeamId used for <see cref="_UpdateVoiceCommsChannels"/>
         /// </summary>
         [PublicAPI]
