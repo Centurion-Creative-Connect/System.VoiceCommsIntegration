@@ -15,10 +15,19 @@ namespace CenturionCC.System.VoiceCommsIntegration
         [SerializeField] [HideInInspector] [NewbieInject]
         private VoiceCommsManager voiceComms;
 
-        [SerializeField] [Tooltip("Staff Team Id specified in PlayerManager")]
+        [SerializeField]
+        [Tooltip("Staff Team Id specified in PlayerManager")]
         private int staffTeamId = 255;
-        [SerializeField] [Tooltip("If checked, Staff team VC will broadcast to all players")]
+        [SerializeField]
+        [Tooltip("If checked, Staff team VC will broadcast to all players")]
         private bool makeStaffTeamAsBroadcastChannel = true;
+        [SerializeField]
+        [Tooltip("If checked, Staff team will receive team VCs. defaults true")]
+        [InspectorName("Make Staff Team Receive Team VC")]
+        private bool makeStaffTeamReceiveTeamVc = true;
+        [SerializeField]
+        [Tooltip("List of player team ids to listen when in staff team. defaults {red:1, yellow:2, green:3, blue:4}")]
+        private int[] staffTeamRxChannels = { 1, 2, 3, 4 };
 
         private void Start()
         {
@@ -46,14 +55,19 @@ namespace CenturionCC.System.VoiceCommsIntegration
             _AddRxChannel(0);
 
             // Add team VC Rx/Tx channel
-            var channelId = teamId;
-            _AddRxChannel(channelId);
-            _AddTxChannel(channelId);
+            _AddRxChannel(teamId);
+            _AddTxChannel(teamId);
 
             // Add staff broadcasting Rx channel if needed
             if (!playerManager.IsStaffTeamId(teamId) && makeStaffTeamAsBroadcastChannel)
             {
                 _AddRxChannel(staffTeamId);
+            }
+
+            // Add staff Rx channel if needed
+            if (playerManager.IsStaffTeamId(teamId) && makeStaffTeamReceiveTeamVc)
+            {
+                foreach (var rxChannel in staffTeamRxChannels) _AddRxChannel(rxChannel);
             }
         }
 
