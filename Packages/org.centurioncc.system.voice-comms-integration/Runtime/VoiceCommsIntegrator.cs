@@ -1,6 +1,7 @@
 ﻿using CenturionCC.System.Player;
 using DerpyNewbie.Common;
 using DerpyNewbie.VoiceComms;
+using JetBrains.Annotations;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDK3.Data;
@@ -34,29 +35,83 @@ namespace CenturionCC.System.VoiceCommsIntegration
         [Tooltip("List of player team ids to listen when in staff team. defaults {red:1, yellow:2, green:3, blue:4}")]
         private int[] staffTeamRxChannels = { 1, 2, 3, 4 };
 
-        private void Start()
-        {
-            playerManager.SubscribeCallback(this);
+        #region PublicAPIs
 
-            if (clearChannelsOnStart)
+        /// <summary>
+        /// Offset that is applied for team Id to prevent channel conflict
+        /// </summary>
+        [PublicAPI]
+        public int ChannelOffset => channelOffset;
+
+        /// <summary>
+        /// Last TeamId used for <see cref="_UpdateVoiceCommsChannels"/>
+        /// </summary>
+        [PublicAPI]
+        public int LastUpdatedTeamId { get; private set; }
+
+        /// <summary>
+        /// Staff Team Id
+        /// </summary>
+        [PublicAPI]
+        public int StaffTeamId
+        {
+            get => staffTeamId;
+            set
             {
-                voiceComms._ClearRxChannel();
-                voiceComms._ClearTxChannel();
+                staffTeamId = value;
+                _UpdateVoiceCommsChannels(LastUpdatedTeamId);
             }
         }
 
-        public override void OnLocalPlayerChanged(PlayerBase playerNullable, int index)
+        /// <summary>
+        /// Should staff VC broadcast to every player?
+        /// </summary>
+        [PublicAPI]
+        public bool MakeStaffTeamAsBroadcastChannel
         {
-            _UpdateVoiceCommsChannels(playerNullable == null ? 0 : playerNullable.TeamId);
+            get => makeStaffTeamAsBroadcastChannel;
+            set
+            {
+                makeStaffTeamAsBroadcastChannel = value;
+                _UpdateVoiceCommsChannels(LastUpdatedTeamId);
+            }
         }
 
-        public override void OnTeamChanged(PlayerBase player, int oldTeam)
+        /// <summary>
+        /// Receive team VCs while in staff team?
+        /// </summary>
+        /// <seealso cref="StaffTeamCustomRxChannels"/>>
+        [PublicAPI]
+        public bool MakeStaffTeamReceiveTeamVc
         {
-            if (!player.IsLocal) return;
-
-            _UpdateVoiceCommsChannels(player.TeamId);
+            get => makeStaffTeamReceiveTeamVc;
+            set
+            {
+                makeStaffTeamReceiveTeamVc = value;
+                _UpdateVoiceCommsChannels(LastUpdatedTeamId);
+            }
         }
 
+        /// <summary>
+        /// Which channels should be receiving when <see cref="makeStaffTeamReceiveTeamVc"/> is enabled?
+        /// </summary>
+        /// <seealso cref="MakeStaffTeamReceiveTeamVc"/>
+        [PublicAPI]
+        public int[] StaffTeamCustomRxChannels
+        {
+            get => staffTeamRxChannels;
+            set
+            {
+                staffTeamRxChannels = value;
+                _UpdateVoiceCommsChannels(LastUpdatedTeamId);
+            }
+        }
+
+        /// <summary>
+        /// Updates VoiceComms Tx/Rx channels by team information
+        /// </summary>
+        /// <param name="teamId">LocalPlayer's team Id</param>
+        [PublicAPI]
         public void _UpdateVoiceCommsChannels(int teamId)
         {
             _ClearRxChannel();
@@ -80,6 +135,34 @@ namespace CenturionCC.System.VoiceCommsIntegration
             {
                 foreach (var rxChannel in staffTeamRxChannels) _AddRxChannel(rxChannel);
             }
+
+            // Update LastTeamId
+            LastUpdatedTeamId = teamId;
+        }
+
+        #endregion
+
+        private void Start()
+        {
+            playerManager.SubscribeCallback(this);
+
+            if (clearChannelsOnStart)
+            {
+                voiceComms._ClearRxChannel();
+                voiceComms._ClearTxChannel();
+            }
+        }
+
+        public override void OnLocalPlayerChanged(PlayerBase playerNullable, int index)
+        {
+            _UpdateVoiceCommsChannels(playerNullable == null ? 0 : playerNullable.TeamId);
+        }
+
+        public override void OnTeamChanged(PlayerBase player, int oldTeam)
+        {
+            if (!player.IsLocal) return;
+
+            _UpdateVoiceCommsChannels(player.TeamId);
         }
 
         #region VoiceCommsHandling
