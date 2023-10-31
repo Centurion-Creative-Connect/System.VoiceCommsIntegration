@@ -74,6 +74,7 @@ namespace CenturionCC.System.VoiceCommsIntegration
         /// <summary>
         /// Receive team VCs while in staff team?
         /// </summary>
+        /// <seealso cref="StaffTeamCustomRxChannels"/>>
         [PublicAPI]
         public bool MakeStaffTeamReceiveTeamVc
         {
@@ -81,6 +82,21 @@ namespace CenturionCC.System.VoiceCommsIntegration
             set
             {
                 makeStaffTeamReceiveTeamVc = value;
+                _UpdateVoiceCommsChannels(LastUpdatedTeamId);
+            }
+        }
+
+        /// <summary>
+        /// Which channels should be receiving when <see cref="makeStaffTeamReceiveTeamVc"/> is enabled?
+        /// </summary>
+        /// <seealso cref="MakeStaffTeamReceiveTeamVc"/>
+        [PublicAPI]
+        public int[] StaffTeamCustomRxChannels
+        {
+            get => staffTeamRxChannels;
+            set
+            {
+                staffTeamRxChannels = value;
                 _UpdateVoiceCommsChannels(LastUpdatedTeamId);
             }
         }
