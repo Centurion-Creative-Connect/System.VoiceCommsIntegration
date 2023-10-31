@@ -3,6 +3,7 @@ using DerpyNewbie.Common;
 using DerpyNewbie.VoiceComms;
 using UdonSharp;
 using UnityEngine;
+using VRC.SDK3.Data;
 
 namespace CenturionCC.System.VoiceCommsIntegration
 {
@@ -26,34 +27,85 @@ namespace CenturionCC.System.VoiceCommsIntegration
 
         public override void OnLocalPlayerChanged(PlayerBase playerNullable, int index)
         {
-            // Reset channels
-            voiceComms._ClearRxChannel();
-            voiceComms._ClearTxChannel();
-
-            var channelId = playerNullable == null ? 0 : playerNullable.TeamId;
-            voiceComms._AddRxChannel(channelId);
-            voiceComms._AddTxChannel(channelId);
-
-            if (makeStaffTeamAsBroadcastChannel) voiceComms._AddRxChannel(staffTeamId);
+            _UpdateVoiceCommsChannels(playerNullable == null ? 0 : playerNullable.TeamId);
         }
 
         public override void OnTeamChanged(PlayerBase player, int oldTeam)
         {
             if (!player.IsLocal) return;
 
-            // Remove previous team channel
-            voiceComms._RemoveRxChannel(oldTeam);
-            voiceComms._RemoveTxChannel(oldTeam);
+            _UpdateVoiceCommsChannels(player.TeamId);
+        }
 
-            // Add current team channel
-            var channelId = player.TeamId;
-            voiceComms._AddRxChannel(channelId);
-            voiceComms._AddTxChannel(channelId);
+        public void _UpdateVoiceCommsChannels(int teamId)
+        {
+            _ClearRxChannel();
+            _ClearTxChannel();
 
-            if (makeStaffTeamAsBroadcastChannel && !voiceComms.RxChannelId.Contains(staffTeamId))
+            // Add default Rx channel
+            _AddRxChannel(0);
+
+            // Add team VC Rx/Tx channel
+            var channelId = teamId;
+            _AddRxChannel(channelId);
+            _AddTxChannel(channelId);
+
+            // Add staff broadcasting Rx channel if needed
+            if (!playerManager.IsStaffTeamId(teamId) && makeStaffTeamAsBroadcastChannel)
             {
-                voiceComms._AddRxChannel(staffTeamId);
+                _AddRxChannel(staffTeamId);
             }
         }
+
+        #region VoiceCommsHandling
+
+        // This is basically wrapper for VoiceComms to prevent conflict between any other gimmicks using VoiceComms
+
+        private readonly DataList _rxChannels = new DataList();
+        private readonly DataList _txChannels = new DataList();
+
+        private void _AddTxChannel(int channelId)
+        {
+            voiceComms._AddTxChannel(channelId);
+            _txChannels.Add(channelId);
+        }
+
+        private void _RemoveTxChannel(int channelId)
+        {
+            voiceComms._RemoveTxChannel(channelId);
+            _txChannels.Remove(channelId);
+        }
+
+        private void _ClearTxChannel()
+        {
+            var tokens = _txChannels.ToArray();
+            foreach (var token in tokens)
+                voiceComms._RemoveTxChannel(token.Int);
+
+            _txChannels.Clear();
+        }
+
+        private void _AddRxChannel(int channelId)
+        {
+            voiceComms._AddRxChannel(channelId);
+            _rxChannels.Add(channelId);
+        }
+
+        private void _RemoveRxChannel(int channelId)
+        {
+            voiceComms._RemoveRxChannel(channelId);
+            _rxChannels.Remove(channelId);
+        }
+
+        private void _ClearRxChannel()
+        {
+            var tokens = _rxChannels.ToArray();
+            foreach (var token in tokens)
+                voiceComms._RemoveRxChannel(token.Int);
+
+            _rxChannels.Clear();
+        }
+
+        #endregion
     }
 }
