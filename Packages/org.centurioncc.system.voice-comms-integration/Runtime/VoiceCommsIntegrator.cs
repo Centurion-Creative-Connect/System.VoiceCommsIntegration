@@ -12,7 +12,7 @@ namespace CenturionCC.System.VoiceCommsIntegration
     public class VoiceCommsIntegrator : PlayerManagerCallbackBase
     {
         [SerializeField] [HideInInspector] [NewbieInject]
-        private PlayerManager playerManager;
+        private PlayerManagerBase playerManager;
         [SerializeField] [HideInInspector] [NewbieInject]
         private VoiceCommsManager voiceComms;
         [SerializeField]
@@ -36,7 +36,6 @@ namespace CenturionCC.System.VoiceCommsIntegration
         private int[] staffTeamRxChannels = { 1, 2, 3, 4 };
 
         #region PublicAPIs
-
         /// <summary>
         /// Offset that is applied for team Id to prevent channel conflict
         /// </summary>
@@ -139,12 +138,11 @@ namespace CenturionCC.System.VoiceCommsIntegration
             // Update LastTeamId
             LastUpdatedTeamId = teamId;
         }
-
         #endregion
 
         private void Start()
         {
-            playerManager.SubscribeCallback(this);
+            playerManager.Subscribe(this);
 
             if (clearChannelsOnStart)
             {
@@ -153,12 +151,13 @@ namespace CenturionCC.System.VoiceCommsIntegration
             }
         }
 
-        public override void OnLocalPlayerChanged(PlayerBase playerNullable, int index)
+        public override void OnPlayerAdded(PlayerBase playerNullable)
         {
+            if (playerNullable == null || !playerNullable.IsLocal) return;
             _UpdateVoiceCommsChannels(playerNullable == null ? 0 : playerNullable.TeamId);
         }
 
-        public override void OnTeamChanged(PlayerBase player, int oldTeam)
+        public override void OnPlayerTeamChanged(PlayerBase player, int oldTeam)
         {
             if (!player.IsLocal) return;
 
@@ -166,7 +165,6 @@ namespace CenturionCC.System.VoiceCommsIntegration
         }
 
         #region VoiceCommsHandling
-
         // This is basically wrapper for VoiceComms to prevent conflict between any other gimmicks using VoiceComms
 
         private readonly DataList _rxChannels = new DataList();
@@ -221,7 +219,6 @@ namespace CenturionCC.System.VoiceCommsIntegration
 
             _rxChannels.Clear();
         }
-
         #endregion
     }
 }
