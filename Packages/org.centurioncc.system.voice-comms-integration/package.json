@@ -1,6 +1,6 @@
 {
   "name": "org.centurioncc.system.voice-comms-integration",
-  "version": "0.3.0-alpha.0",
+  "version": "0.3.0-alpha.1",
   "displayName": "Centurion System Voice Comms Integration",
   "description": "Integrate VoiceComms with Centurion System",
   "unity": "2022.3",
