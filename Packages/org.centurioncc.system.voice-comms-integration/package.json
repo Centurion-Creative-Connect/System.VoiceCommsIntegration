@@ -10,8 +10,8 @@
     "url": "https://github.com/derpynewbie"
   },
   "vpmDependencies": {
-    "dev.derpynewbie.voice-comms": ">=0.3.0-beta.0",
-    "org.centurioncc.system": ">=1.0.0-alpha.0"
+    "dev.derpynewbie.voice-comms": ">=0.3.0",
+    "org.centurioncc.system": ">=1.0.0-rc.5"
   },
   "hideInEditor": false
 }

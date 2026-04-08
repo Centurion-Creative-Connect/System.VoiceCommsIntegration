@@ -22,9 +22,6 @@ namespace CenturionCC.System.VoiceCommsIntegration
         [Tooltip("Clears VoiceComms Tx/Rx channels on Start()")]
         private bool clearChannelsOnStart = true;
         [SerializeField]
-        [Tooltip("Staff Team Id specified in PlayerManager")]
-        private int staffTeamId = 255;
-        [SerializeField]
         [Tooltip("If checked, Staff team VC will broadcast to all players")]
         private bool makeStaffTeamAsBroadcastChannel = true;
         [SerializeField]
@@ -49,20 +46,6 @@ namespace CenturionCC.System.VoiceCommsIntegration
         public int LastUpdatedTeamId { get; private set; }
 
         /// <summary>
-        /// Staff Team Id
-        /// </summary>
-        [PublicAPI]
-        public int StaffTeamId
-        {
-            get => staffTeamId;
-            set
-            {
-                staffTeamId = value;
-                _UpdateVoiceCommsChannels(LastUpdatedTeamId);
-            }
-        }
-
-        /// <summary>
         /// Should staff VC broadcast to every player?
         /// </summary>
         [PublicAPI]
@@ -77,7 +60,7 @@ namespace CenturionCC.System.VoiceCommsIntegration
         }
 
         /// <summary>
-        /// Receive team VCs while in staff team?
+        /// Receive team VCs while in the staff team?
         /// </summary>
         /// <seealso cref="StaffTeamCustomRxChannels"/>>
         [PublicAPI]
@@ -124,13 +107,13 @@ namespace CenturionCC.System.VoiceCommsIntegration
             _AddTxChannel(teamId);
 
             // Add staff broadcasting Rx channel if needed
-            if (!playerManager.IsStaffTeamId(teamId) && makeStaffTeamAsBroadcastChannel)
+            if (!PlayerBaseExtensions.IsStaffTeamId(teamId) && makeStaffTeamAsBroadcastChannel)
             {
-                _AddRxChannel(staffTeamId);
+                _AddRxChannel(teamId);
             }
 
             // Add staff Rx channel if needed
-            if (playerManager.IsStaffTeamId(teamId) && makeStaffTeamReceiveTeamVc)
+            if (PlayerBaseExtensions.IsStaffTeamId(teamId) && makeStaffTeamReceiveTeamVc)
             {
                 foreach (var rxChannel in staffTeamRxChannels) _AddRxChannel(rxChannel);
             }
@@ -151,10 +134,10 @@ namespace CenturionCC.System.VoiceCommsIntegration
             }
         }
 
-        public override void OnPlayerAdded(PlayerBase playerNullable)
+        public override void OnPlayerAdded(PlayerBase player)
         {
-            if (playerNullable == null || !playerNullable.IsLocal) return;
-            _UpdateVoiceCommsChannels(playerNullable == null ? 0 : playerNullable.TeamId);
+            if (player == null || !player.IsLocal) return;
+            _UpdateVoiceCommsChannels(player.TeamId);
         }
 
         public override void OnPlayerTeamChanged(PlayerBase player, int oldTeam)
