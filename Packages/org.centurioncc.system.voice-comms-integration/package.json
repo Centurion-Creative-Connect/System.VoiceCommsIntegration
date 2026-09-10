@@ -1,6 +1,6 @@
 {
   "name": "org.centurioncc.system.voice-comms-integration",
-  "version": "0.3.0-alpha.1",
+  "version": "1.0.0",
   "displayName": "Centurion System Voice Comms Integration",
   "description": "Integrate VoiceComms with Centurion System",
   "unity": "2022.3",
@@ -11,7 +11,7 @@
   },
   "vpmDependencies": {
     "dev.derpynewbie.voice-comms": ">=0.3.0",
-    "org.centurioncc.system": ">=1.0.0-rc.5"
+    "org.centurioncc.system": ">=1.0.0"
   },
   "hideInEditor": false
 }
